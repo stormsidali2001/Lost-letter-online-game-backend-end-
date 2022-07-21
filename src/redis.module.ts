@@ -1,7 +1,7 @@
 import { DynamicModule, FactoryProvider, Module, ModuleMetadata } from "@nestjs/common";
 import IoRedis, { Redis, RedisOptions } from 'ioredis';
-import { async } from "rxjs";
 export const IoRedisKey = 'IoRedis';
+
 type RedisModuleOptions = {
     connectionOptions:RedisOptions;
     onClientReady?:(client:Redis)=>void;
