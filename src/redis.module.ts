@@ -24,12 +24,11 @@ export class RedisModule {
         } :RedisAsyncModuleOptions
 
     ):Promise<DynamicModule>{
-        const RedisProvider = {
+        const redisProvider = {
             provide:IoRedisKey,
             useFactory:async(...args)=>{
                 const { connectionOptions, onClientReady} = await useFactory(...args);
-
-                const client = new IoRedis(connectionOptions);
+                const client = await new IoRedis(connectionOptions);
                 onClientReady(client);
                 return client;
             },
@@ -39,9 +38,9 @@ export class RedisModule {
             module: RedisModule,
             imports,
             providers: [
-                RedisProvider
+                redisProvider
             ],
-            exports:[RedisProvider]
+            exports:[redisProvider]
 
         }
     }
