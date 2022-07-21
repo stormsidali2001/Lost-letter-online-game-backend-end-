@@ -1,16 +1,48 @@
-import { DynamicModule, Module } from "@nestjs/common";
-import IoRedis from 'ioredis';
-
+import { DynamicModule, FactoryProvider, Module, ModuleMetadata } from "@nestjs/common";
+import IoRedis, { Redis, RedisOptions } from 'ioredis';
+import { async } from "rxjs";
+export const IoRedisKey = 'IoRedis';
+type RedisModuleOptions = {
+    connectionOptions:RedisOptions;
+    onClientReady?:(client:Redis)=>void;
+}
+type RedisAsyncModuleOptions = {
+    useFactory:(
+        ...args:any[]
+    )=>Promise<RedisModuleOptions> | RedisModuleOptions ;
+} & Pick<ModuleMetadata, 'imports'>
+  & Pick<FactoryProvider, 'inject'>;
 @Module({
 
 })
 export class RedisModule {
-    static async registerAsync():Promise<DynamicModule>{
+    static async registerAsync(
+        {
+            useFactory,
+            inject,
+            imports,
+        } :RedisAsyncModuleOptions
+
+    ):Promise<DynamicModule>{
+        const RedisProvider = {
+            provide:IoRedisKey,
+            useFactory:async(...args)=>{
+                const { connectionOptions, onClientReady} = await useFactory(...args);
+
+                const client = new IoRedis(connectionOptions);
+                onClientReady(client);
+                return client;
+            },
+            inject,
+        }
         return {
             module: RedisModule,
-            imports: [],
-            providers: [],
-            exports: [],
+            imports,
+            providers: [
+                RedisProvider
+            ],
+            exports:[RedisProvider]
+
         }
     }
 }
