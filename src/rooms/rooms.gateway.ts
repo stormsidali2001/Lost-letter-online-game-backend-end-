@@ -17,7 +17,9 @@ export class RoomsGateWay implements OnGatewayInit,OnGatewayConnection,OnGateway
         this.logger.debug(`Number of connected sockets is : ${sockets.size}`);
     }
     handleDisconnect(client: any) {
-        throw new Error("Method not implemented.");
+        const sockets = this.io.sockets;
+        this.logger.log(`Client disconnected: ${client.id}`);
+        this.logger.debug(`Number of connected sockets is : ${sockets.size}`);
     }
 
 }

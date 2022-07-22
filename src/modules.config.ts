@@ -1,5 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
 import Redis from "ioredis";
 import { RedisModule } from "./redis.module";
 
@@ -27,6 +28,21 @@ export const redisModule = RedisModule.registerAsync({
        
     }
 
+  },
+  inject:[ConfigService],
+})
+
+export const jwtModule = JwtModule.registerAsync({
+  imports:[ConfigModule],
+  useFactory:async(configService:ConfigService)=>{
+    const logger = new Logger("JwtModule");
+
+    return{
+        secret:configService.get("JWT_SECRET"),
+        signOptions:{
+            expiresIn:configService.get("ROOM_TTL"),
+        },
+    }
   },
   inject:[ConfigService],
 })
