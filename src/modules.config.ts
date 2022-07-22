@@ -35,7 +35,6 @@ export const redisModule = RedisModule.registerAsync({
 export const jwtModule = JwtModule.registerAsync({
   imports:[ConfigModule],
   useFactory:async(configService:ConfigService)=>{
-    const logger = new Logger("JwtModule");
 
     return{
         secret:configService.get("JWT_SECRET"),
