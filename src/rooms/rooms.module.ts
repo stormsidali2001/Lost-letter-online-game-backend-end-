@@ -10,7 +10,7 @@ import { RoomsService } from "./rooms.service";
 
 
 @Module({
-    imports:[ConfigModule,redisModule,jwtModule,MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
+    imports:[ConfigModule,redisModule,jwtModule,],
     controllers:[RoomsController],
     providers:[RoomsService,RoomsRepository,RoomsGateWay],
 })
