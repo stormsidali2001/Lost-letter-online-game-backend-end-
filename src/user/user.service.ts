@@ -99,7 +99,7 @@ export class UserService{
         
         const acces_token_secret = this.config.get<string>('ACCESS_TOKEN_SECRET');
         const refresh_token_secret = this.config.get<string>('REFRESH_TOKEN_SECRET');
-        console.log(acces_token_secret,refresh_token_secret);
+        
         const [access_token, refresh_token] = await Promise.all([
           this.jwtService.signAsync(jwtPayload, {
             secret:acces_token_secret,

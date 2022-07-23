@@ -12,13 +12,11 @@ export class UserController {
     constructor(
         private readonly userService: UserService
     ) { }
-
     @Public()
     @Post('signup')
     async signup(@Body() createUserDto) {
         return this.userService.signup(createUserDto);
     }
-
     @Public()
     @Post('signin')
     async signin(@Body() credentials: LoginUserDto) {
