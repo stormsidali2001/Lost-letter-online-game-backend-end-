@@ -58,15 +58,15 @@ export class UserService{
                 this.logger.error("wrong password");
                 throw new UnauthorizedException("Invalid credentials");
             }
-            const tokens = await this.getTokens(user.id, user.email);   
-            await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
+            const tokens = await this.#getTokens(user.id, user.email);   
+            await this.#updateRefreshTokenHash(user.id, tokens.refresh_token);
             return tokens;
         }catch(e){
             this.logger.log(e);
             throw new UnauthorizedException("Invalid credentials");
         }
     }
-    async getTokens(userId: number, email: string): Promise<Tokens> {
+    async #getTokens(userId: number, email: string): Promise<Tokens> {
         const jwtPayload: JwtPayload = {
           sub: userId,
           email: email,
@@ -88,7 +88,7 @@ export class UserService{
           refresh_token,
         };
       }
-      async updateRefreshTokenHash(_id: string, refreshToken: string): Promise<void> {
+      async #updateRefreshTokenHash(_id: string, refreshToken: string): Promise<void> {
         const hash = await argon.hash(refreshToken);
         await this.userRepository.findOneAndUpdate({_id}, {refreshTokenHash:hash});
       }

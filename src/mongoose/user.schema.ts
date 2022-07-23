@@ -18,5 +18,8 @@ export class User{
 
     @Prop({default:new Date()})
     updatedAt:Date;
+
+    @Prop({default:null,required:false})
+    refreshTokenHash:string;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

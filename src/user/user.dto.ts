@@ -4,6 +4,7 @@ export class createUserDto {
     password:string;
     createdAt:Date;
     updatedAt:Date;
+    
 }
 
 export class LoginUserDto{
