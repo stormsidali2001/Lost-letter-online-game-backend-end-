@@ -33,4 +33,9 @@ export class UserController {
         return this.userService.refreshToken(userId,refreshToken);
     }
 
+    @Post("logout")
+    async logout(@getCurrentUserId() userId: string){
+        return this.userService.logout(userId);
+    }
+
 }

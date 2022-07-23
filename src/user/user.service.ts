@@ -32,13 +32,17 @@ export class UserService{
     }
     async signup(user:createUserDto){
         try{
-            const userDb = await this.userRepository.findOne({email:user.email});
+            let userDb = await this.userRepository.findOne({email:user.email});
             if(userDb){
                 this.logger.error("user already exists");
                 throw new UnauthorizedException("User already exists");
             }
             user.password = await bcrypt.hash(user.password,10);
-            return await this.userRepository.create(user);
+            userDb = await this.userRepository.create(user);
+
+             const tokens = await this.#getTokens(userDb.id, user.email);   
+             await this.#updateRefreshTokenHash(userDb.id, tokens.refresh_token);
+             return tokens;
         }catch(e){
             this.logger.log(e);
             throw new UnauthorizedException("Invalid credentials");
@@ -83,20 +87,26 @@ export class UserService{
         this.#updateRefreshTokenHash(user.id, tokens.refresh_token);
         return tokens;
     }
+    async logout(userId:string){
+        await this.userRepository.findOneAndUpdate({_id:userId},{refreshTokenHash:null});
+        return "done"
+    }
     async #getTokens(userId: number, email: string): Promise<Tokens> {
         const jwtPayload: JwtPayload = {
           sub: userId,
           email: email,
         };
         
-    
+        const acces_token_secret = this.config.get<string>('ACCESS_TOKEN_SECRET');
+        const refresh_token_secret = this.config.get<string>('REFRESH_TOKEN_SECRET');
+        console.log(acces_token_secret,refresh_token_secret);
         const [access_token, refresh_token] = await Promise.all([
           this.jwtService.signAsync(jwtPayload, {
-            secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
+            secret:acces_token_secret,
             expiresIn: '15m',
           }),
           this.jwtService.signAsync(jwtPayload, {
-            secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
+            secret: refresh_token_secret,
             expiresIn: '7d',
           }),
         ]);
