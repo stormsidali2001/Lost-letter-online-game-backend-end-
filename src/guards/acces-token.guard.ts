@@ -2,6 +2,7 @@ import { ExecutionContext, Injectable, Logger } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Reflector } from '@nestjs/core';
 
+//the guard is the responsible for calling the approperiate strategy
 @Injectable()
 export class AccesTokenGuard extends AuthGuard("jwt") {
     private readonly logger = new Logger(AccesTokenGuard.name);
@@ -15,6 +16,6 @@ export class AccesTokenGuard extends AuthGuard("jwt") {
             context.getClass() // in the class (example :userController)
         ])
         if(isPublic) return true;
-        return super.canActivate(context);
+        return super.canActivate(context); 
     }
 }

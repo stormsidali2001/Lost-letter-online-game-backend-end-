@@ -66,8 +66,8 @@ export class UserService{
             throw new UnauthorizedException("Invalid credentials");
         }
     }
-    async refreshToken(payload:refreshTokenDTO){
-        const {userId,refresh_token} = payload;
+    async refreshToken(userId:string,refresh_token:string){
+     
         const user = await this.userRepository.findOne({_id:userId});
         if(!user || !user.refreshTokenHash){
             this.logger.log("acces denied");
