@@ -1,6 +1,5 @@
 import { Logger } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { JwtModule } from "@nestjs/jwt";
 import { MongooseModule } from "@nestjs/mongoose";
 import Redis from "ioredis";
 import { RedisModule } from "./redis.module";

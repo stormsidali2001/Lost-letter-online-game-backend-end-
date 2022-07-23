@@ -1,7 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { FilterQuery } from "mongoose";
 import { User } from "src/mongoose/user.schema";
-import { createUserDto, LoginUserDto, refreshTokenDTO } from "./user.dto";
+import { createUserDto, LoginUserDto } from "./user.dto";
 import { UserRepository } from "./user.repository";
 import * as bcrypt from 'bcryptjs';
 import * as argon from 'argon2';

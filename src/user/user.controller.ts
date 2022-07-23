@@ -3,7 +3,7 @@ import { getCurrentUserId } from "src/decorators/get-current-user-id.decorator";
 import { getCurrentUser } from "src/decorators/get-current-user.decorator";
 import { Public } from "src/decorators/public-decorator";
 import { RefrechTokenGuard } from "src/guards/refresh-token.guard";
-import { LoginUserDto, refreshTokenDTO } from "./user.dto";
+import { LoginUserDto } from "./user.dto";
 import { UserService } from "./user.service";
 
 
@@ -21,7 +21,7 @@ export class UserController {
 
     @Public()
     @Post('signin')
-    async signin(credentials: LoginUserDto) {
+    async signin(@Body() credentials: LoginUserDto) {
         return this.userService.signin(credentials);
     }
     @Public()
