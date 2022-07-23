@@ -43,5 +43,18 @@ export class RoomsRepository{
               throw new InternalServerErrorException();
           }
     }
+    async getRoom(id:string){
+        try{
+            const key = `room:${id}`;
+            const room = await this.redisClient.get(key);
+            return JSON.parse(room);
+        }catch(e){
+            this.logger.error(
+                `Error while getting room with id: ${id}\n${e}`,
+              );
+              throw new InternalServerErrorException();
+        }
+      
+    }
    
 }

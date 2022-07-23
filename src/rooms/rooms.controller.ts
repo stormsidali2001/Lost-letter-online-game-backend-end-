@@ -7,7 +7,6 @@ export class RoomsController {
 
     @Post('create')
     async createRoom(){
-
     }
 
     @Post('join')
