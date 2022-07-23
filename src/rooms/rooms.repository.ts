@@ -16,10 +16,10 @@ export class RoomsRepository{
         this.ttl = configService.get("ROOM_TTL");
     }
     async createRoom(data:CreateRoomDto){
-        const {name,password,id} = data;
+        const {name,id} = data;
         const initialRoom = {
-            name,
-            password,
+           s:'SSSS'
+           
         };
         this.logger.log(
             `Creating new room: ${JSON.stringify(initialRoom)} with TTL ${
@@ -29,12 +29,10 @@ export class RoomsRepository{
           
           const key = `room:${id}`;
           try{
-               await this.redisClient
-              .multi([
-                    ['send_command', 'JSON.SET', key, '.', JSON.stringify(initialRoom)],
-                    ['expire', key, this.ttl],
-              ])
-              .exec();
+            await this.redisClient
+           .call('SET', key, JSON.stringify(initialRoom))
+           
+           
 
           }catch(e){
             this.logger.error(
