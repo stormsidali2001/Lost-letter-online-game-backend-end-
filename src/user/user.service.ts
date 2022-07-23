@@ -4,10 +4,12 @@ import { User } from "src/mongoose/user.schema";
 import { createUserDto, LoginUserDto } from "./user.dto";
 import { UserRepository } from "./user.repository";
 import * as bcrypt from 'bcryptjs';
+import * as argon from 'argon2';
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { Tokens } from "./types/tokens.type";
 import { JwtPayload } from "./types/jwtPayload.type";
+
 
 
 @Injectable()
@@ -56,8 +58,9 @@ export class UserService{
                 this.logger.error("wrong password");
                 throw new UnauthorizedException("Invalid credentials");
             }
-            const  {password:ps,...res} = user;            
-            return res;
+            const tokens = await this.getTokens(user.id, user.email);   
+            await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
+            return tokens;
         }catch(e){
             this.logger.log(e);
             throw new UnauthorizedException("Invalid credentials");
@@ -85,6 +88,11 @@ export class UserService{
           refresh_token,
         };
       }
+      async updateRefreshTokenHash(_id: string, refreshToken: string): Promise<void> {
+        const hash = await argon.hash(refreshToken);
+        await this.userRepository.findOneAndUpdate({_id}, {refreshTokenHash:hash});
+      }
+
     
 
 }
