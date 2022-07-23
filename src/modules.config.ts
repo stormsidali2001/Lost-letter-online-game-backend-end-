@@ -33,19 +33,7 @@ export const redisModule = RedisModule.registerAsync({
   inject:[ConfigService],
 })
 
-export const jwtModule = JwtModule.registerAsync({
-  imports:[ConfigModule],
-  useFactory:async(configService:ConfigService)=>{
 
-    return{
-        secret:configService.get("JWT_SECRET"),
-        signOptions:{
-            expiresIn:configService.get("ROOM_TTL"),
-        },
-    }
-  },
-  inject:[ConfigService],
-})
 
 export const mongooseModule = MongooseModule.forRootAsync({
   imports: [ConfigModule],
