@@ -12,6 +12,7 @@ export class UserController {
     async signup(@Body() createUserDto) {
         return this.userService.signup(createUserDto);
     }
+    
     @Post('signin')
     async signin(@Request() req) {
         return req.user;

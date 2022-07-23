@@ -37,7 +37,7 @@ export class UserService{
         }
         
     }
-    async validateUser(credentials:LoginUserDto){
+    async signin(credentials:LoginUserDto){
         const {email,password} = credentials;
         try{
             const user = await this.userRepository.findOne({email});
@@ -57,5 +57,7 @@ export class UserService{
             throw new UnauthorizedException("Invalid credentials");
         }
     }
+
+    
 
 }
