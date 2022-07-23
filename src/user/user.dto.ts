@@ -16,3 +16,10 @@ export class LoginUserDto{
     }
 }
 
+export class refreshTokenDTO{
+    refresh_token:string;
+    userId:string;
+    constructor(refresh_token){
+        this.refresh_token = refresh_token;
+    }
+}

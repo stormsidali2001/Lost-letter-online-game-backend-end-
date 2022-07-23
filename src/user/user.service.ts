@@ -1,7 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { FilterQuery } from "mongoose";
 import { User } from "src/mongoose/user.schema";
-import { createUserDto, LoginUserDto } from "./user.dto";
+import { createUserDto, LoginUserDto, refreshTokenDTO } from "./user.dto";
 import { UserRepository } from "./user.repository";
 import * as bcrypt from 'bcryptjs';
 import * as argon from 'argon2';
@@ -66,11 +66,29 @@ export class UserService{
             throw new UnauthorizedException("Invalid credentials");
         }
     }
+    async refreshToken(payload:refreshTokenDTO){
+        const {userId,refresh_token} = payload;
+        const user = await this.userRepository.findOne({_id:userId});
+        if(!user || !user.refreshTokenHash){
+            this.logger.log("acces denied");
+            throw new UnauthorizedException("acces denied");
+        }
+        const matches = await argon.verify(user.refreshTokenHash, refresh_token);
+        if(!matches){
+            this.logger.log("acces denied");
+            throw new UnauthorizedException("acces denied");
+        }
+
+        const tokens = await this.#getTokens(user.id, user.email);
+        this.#updateRefreshTokenHash(user.id, tokens.refresh_token);
+        return tokens;
+    }
     async #getTokens(userId: number, email: string): Promise<Tokens> {
         const jwtPayload: JwtPayload = {
           sub: userId,
           email: email,
         };
+        
     
         const [access_token, refresh_token] = await Promise.all([
           this.jwtService.signAsync(jwtPayload, {
@@ -88,7 +106,7 @@ export class UserService{
           refresh_token,
         };
       }
-      async #updateRefreshTokenHash(_id: string, refreshToken: string): Promise<void> {
+    async #updateRefreshTokenHash(_id: string, refreshToken: string): Promise<void> {
         const hash = await argon.hash(refreshToken);
         await this.userRepository.findOneAndUpdate({_id}, {refreshTokenHash:hash});
       }
