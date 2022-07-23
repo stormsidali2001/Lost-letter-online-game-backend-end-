@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import Redis from "ioredis";
 import { IoRedisKey } from "src/redis.module";
 import { CreateRoomDto } from "./room.dto";
+import * as uniqid from "uniqid";
 
 
 @Injectable()
@@ -15,11 +16,10 @@ export class RoomsRepository{
     ){
         this.ttl = configService.get("ROOM_TTL");
     }
-    async createRoom(data:CreateRoomDto){
-        const {name,id} = data;
+    async createRoom({name,creatorUserId}:CreateRoomDto){
         const initialRoom = {
-           s:'SSSS'
-           
+            name,
+            creatorUserId
         };
         this.logger.log(
             `Creating new room: ${JSON.stringify(initialRoom)} with TTL ${
@@ -27,12 +27,16 @@ export class RoomsRepository{
             } ...`,
           );
           
-          const key = `room:${id}`;
+          const key = `room:${name}${uniqid()}`;
           try{
+
+    
             await this.redisClient
-           .call('SET', key, JSON.stringify(initialRoom))
-           
-           
+           .call('SET', key, JSON.stringify(initialRoom), 'EX', this.ttl)
+           this.logger.log(
+            `Room created:  ${JSON.stringify(initialRoom)}\n$`,
+          );
+          return initialRoom;
 
           }catch(e){
             this.logger.error(

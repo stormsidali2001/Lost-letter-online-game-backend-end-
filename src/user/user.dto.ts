@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsEmpty } from "class-validator";
+import { IsDate, IsEmail, IsEmpty, IsNotEmpty, IsString } from "class-validator";
 
 export class createUserDto {
     @IsEmpty()
@@ -22,7 +22,8 @@ export class LoginUserDto{
     @IsEmail()
     email:string;
 
-    @IsEmpty()
+    @IsNotEmpty()
+    @IsString()
     password:string;
     constructor(email,password){
         this.email = email;
