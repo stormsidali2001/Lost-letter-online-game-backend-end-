@@ -5,8 +5,7 @@ export class CreateRoomDto{
     @IsString()
     name:string;
     password?:string;
-    @IsNotEmpty()
-    @IsString()
-    creatorUserId:string;
+ 
+   
 
 }

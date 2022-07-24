@@ -16,10 +16,10 @@ export class RoomsRepository{
     ){
         this.ttl = configService.get("ROOM_TTL");
     }
-    async createRoom({name,creatorUserId}:CreateRoomDto){
+    async createRoom(userId:string,{name}:CreateRoomDto){
         const initialRoom = {
             name,
-            creatorUserId
+            creatorId:userId,
         };
         this.logger.log(
             `Creating new room: ${JSON.stringify(initialRoom)} with TTL ${

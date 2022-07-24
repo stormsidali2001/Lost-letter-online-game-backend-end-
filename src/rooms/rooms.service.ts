@@ -11,8 +11,8 @@ export class RoomsService {
     constructor(private readonly roomsRepository:RoomsRepository){
 
     }
-    createRoom(data: CreateRoomDto) {
-        return this.roomsRepository.createRoom(data);
+    createRoom(userId:string,data: CreateRoomDto) {
+        return this.roomsRepository.createRoom(userId,data);
     }
    
 }

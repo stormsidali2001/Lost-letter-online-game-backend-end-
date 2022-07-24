@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
+import { getCurrentUserId } from "src/decorators/get-current-user-id.decorator";
 import { Public } from "src/decorators/public-decorator";
 import { CreateRoomDto } from "./room.dto";
 import { RoomsService } from "./rooms.service";
@@ -10,10 +11,10 @@ export class RoomsController {
         private readonly roomService: RoomsService
     ) { }
 
-    @Public() //temporary solution
+
     @Post('create')
-    async createRoom(@Body() data:CreateRoomDto){
-        return this.roomService.createRoom(data);
+    async createRoom(@getCurrentUserId() userId:string,@Body() data:CreateRoomDto){
+        return this.roomService.createRoom(userId,data);
     }
     
     @Post('join')
