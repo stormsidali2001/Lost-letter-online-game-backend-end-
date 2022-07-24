@@ -13,7 +13,7 @@ import { UserService } from "./user.service";
 
 
 @Module({
-    imports:[mongooseModule,PassportModule,ConfigModule,JwtModule.register({}),MongooseModule.forFeature([{ name: User.name, schema: UserSchema }],)],
+    imports:[mongooseModule,PassportModule,ConfigModule,MongooseModule.forFeature([{ name: User.name, schema: UserSchema }],)],
     controllers:[UserController],
     providers:[UserService,UserRepository,RefrechTokenStrategy,AccessTokenStrategy],
 

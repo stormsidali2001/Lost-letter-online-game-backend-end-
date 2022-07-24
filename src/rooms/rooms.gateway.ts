@@ -1,6 +1,10 @@
-import { Logger } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { NextFunction } from "express";
 import { Namespace, Socket } from "socket.io";
+import { SocketWithJwtPayload } from "src/user/types/jwtPayload.type";
 @WebSocketGateway({
     namespace:'rooms'
 })
@@ -13,6 +17,7 @@ export class RoomsGateWay implements OnGatewayInit,OnGatewayConnection,OnGateway
     }
     handleConnection(client: Socket, ...args: any[]) {
         const sockets = this.io.sockets;
+    console.log(client)
         this.logger.log(`Client connected: ${client.id}`);
         this.logger.debug(`Number of connected sockets is : ${sockets.size}`);
     }
@@ -23,3 +28,4 @@ export class RoomsGateWay implements OnGatewayInit,OnGatewayConnection,OnGateway
     }
 
 }
+
